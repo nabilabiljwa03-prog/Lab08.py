@@ -1,1 +1,132 @@
+class Mahasiswa:
+    def __init__(self):
+        self.data = []
 
+    def tambah(self, nama, nim, nilai_Tugas, nilai_UTS, nilai_UAS):
+        nilai_akhir = (nilai_Tugas * 0.3) + (nilai_UTS * 0.35) + (nilai_UAS * 0.35)
+        self.data.append({
+            "nama": nama,
+            "nim": nim,
+            "nilai_UTS": nilai_UTS, 
+            "nilai_Tugas": nilai_Tugas,
+            "nilai_UAS": nilai_UAS,
+            "nilai_akhir": nilai_akhir,
+        })
+        print(f"Data {nama} berhasil ditambahkan.\n")
+
+    def hapus(self, nama):
+        for mhs in self.data[:]:               
+            if mhs["nama"].lower() == nama.lower():
+                self.data.remove(mhs)
+                print(f"Data {nama} berhasil dihapus.\n")
+                return
+        print(f"Data dengan nama {nama} tidak ditemukan.\n")
+
+    def cari(self, nama):
+        for mhs in self.data:
+            if nama.lower() in mhs["nama"].lower():
+                print(f"=== Hasil Pencarian untuk '{nama}' ===")
+                print(f"Nama  : {mhs['nama']}")
+                print(f"NIM   : {mhs['nim']}")
+                print(f"Tugas : {mhs['nilai_Tugas']}")
+                print(f"UTS   : {mhs['nilai_UTS']}")
+                print(f"UAS   : {mhs['nilai_UAS']}")
+                print(f"Akhir : {mhs['nilai_akhir']:.2f}\n")
+                return
+        print(f"Data  tidak ditemukan.\n")
+    
+    
+    def ubah(self, nama_baru=None, nim_baru=None,nilai_Tugas_baru=None, nilai_UTS_baru=None, nilai_UAS_baru=None):
+        for mhs in self.data:
+            if mhs["nama"].lower() == nama.lower():
+                if nama_baru:
+                    mhs["nama"] = nama_baru
+                if nim_baru:
+                    mhs["nim"] = nim_baru
+                if nilai_Tugas_baru is not None:
+                    mhs["nilai_Tugas"] = nilai_Tugas_baru
+                if nilai_UTS_baru is not None:
+                    mhs["nilai_UTS"] = nilai_UTS_baru
+                    mhs["nilai_akhir"] = (nilai_Tugas_baru * 0.3) + (nilai_UTS_baru * 0.35) + (nilai_UAS_baru * 0.35)
+                if nilai_UAS_baru is not None:
+                    mhs["nilai_UAS"] = nilai_UAS_baru
+                    mhs["nilai_akhir"] = (nilai_Tugas_baru * 0.3) + (nilai_UTS_baru * 0.35) + (nilai_UAS_baru * 0.35)
+                print(f"Data {nama} berhasil diubah.\n")
+                return
+        print(f"Data dengan nama {nama} tidak ditemukan.\n")
+
+    def tampilkan(self):
+        print("\nProgram Input Nilai")
+        print("-" * 69)
+        print(f"| {'NO':^2} | {'NIM':^10} | {'NAMA':^12} | {'TUGAS':^6} | {'UTS':^6} | {'UAS':^6} | {'AKHIR':^6} |")
+        print("-" * 69)
+
+        if not self.data:
+            print("|                    TIDAK ADA DATA MAHASISWA                        |")
+            print("-" * 69)
+            return
+
+        for i, mhs in enumerate(self.data, start=1):
+            print(f"| {i:^2} | {mhs['nim']:^10} | {mhs['nama']:^12} | " 
+                    f"{mhs['nilai_Tugas']:^6} |{mhs['nilai_UTS']:^6}  |{mhs['nilai_UAS']:^6}  |{mhs['nilai_akhir']:^7.2f} |")
+        print("-" * 69)
+    
+
+m = Mahasiswa()
+
+while True:
+    print("\n" + "="*35)
+    print("   PROGRAM INPUT NILAI MAHASISWA")
+    print("="*35)
+    pilihan = input("[(L)ihat, (T)ambah, (U)bah, (H)apus, (K)eluar, (C)ari]: ").lower().strip()
+
+    if pilihan == "t":
+        nama = input("Masukkan nama   : ")
+        nim  = input("Masukkan NIM    : ")
+        try:
+            tugas = float(input("Masukan Nilai Tugas : "))
+            uts = float(input("Masukkan nilai UTS : "))
+            uas = float(input("Masukkan nilai UAS : "))
+        except ValueError:
+            print("Nilai harus berupa angka!\n")
+            continue
+        m.tambah(nama, nim, tugas, uts, uas)
+
+    elif pilihan == "l":
+        m.tampilkan()
+
+    elif pilihan == "c":  
+        nama_cari = input("Masukkan nama yang ingin dicari: ").strip()
+        if nama_cari:
+            m.cari(nama_cari)
+
+    elif pilihan == "h":
+        nama = input("Masukkan nama yang ingin dihapus: ")
+        m.hapus(nama)
+
+    elif pilihan == "u":
+        nama = input("Masukkan nama yang ingin diubah: ")
+        if not any(mhs["nama"].lower() == nama.lower() for mhs in m.data):
+            print("Nama tidak ditemukan!\n")
+            continue
+        print("Kosongkan jika tidak ingin mengubah bidang tersebut.")
+        nama_baru = input("Nama baru   : ") or None
+        nim_baru = input("NIM baru     : ") or None
+        try:
+            tugas_baru = input("Nilai Tugas baru: ")
+            tugas_baru = float(tugas_baru) if tugas_baru else None
+            uts_baru = input("Nilai UTS baru : ")
+            uts_baru = float(uts_baru) if uts_baru else None
+            uas_baru = input("Nilai UAS baru : ")
+            uas_baru = float(uas_baru) if uas_baru else None
+        except ValueError:
+            print("Nilai harus angka!\n")
+            continue
+        m.ubah(nama_baru,nim_baru,tugas_baru,uts_baru,uas_baru)
+
+    elif pilihan == "k":
+        print("Terima kasih, program selesai.")
+        break
+
+    else:
+        print("Pilihan tidak valid, coba lagi.\n")
